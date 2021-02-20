@@ -8,18 +8,23 @@ import React, {
   useContext
 } from 'react'
 
-type CursorWrapperProps = {
-  children: ReactNode
-  element: ReactNode
-}
-
-type MousePosProviderProps = {
-  children: ReactNode
+type Settings = {
+  keepOriginal: boolean
 }
 
 type Position = {
   x: number
   y: number
+}
+
+type CursorWrapperProps = {
+  children: ReactNode
+  element: ReactNode,
+  settings: Settings
+}
+
+type MousePosProviderProps = {
+  children: ReactNode
 }
 
 const MousePosContext = createContext<Position>({ x: 100, y: 50 })
@@ -38,22 +43,24 @@ export const MousePosProvider: FunctionComponent<MousePosProviderProps> = ({ chi
   )
 }
 
-export const CursorWrapper: FunctionComponent<CursorWrapperProps> = ({ element, children }) => {
+export const CursorWrapper: FunctionComponent<CursorWrapperProps> = ({ settings, element, children }) => {
   const [inside, setInside] = useState<boolean>(false)
   const parent = useRef<HTMLDivElement>(null)
   const mousePos = useContext(MousePosContext)
 
   useEffect(() => {
-    console.log('test')
   }, [inside])
 
   const handleMouseEnter = () => {
-    setInside(true);
-    document.body.style.cursor = "none"
+    setInside(true)
+
+    if (!settings.keepOriginal) {
+      document.body.style.cursor = "none"
+    }
   }
 
   const handleMouseOut = () => {
-    setInside(false);
+    setInside(false)
     document.body.style.cursor = "auto"
   }
 
@@ -64,7 +71,7 @@ export const CursorWrapper: FunctionComponent<CursorWrapperProps> = ({ element, 
         onMouseEnter={handleMouseEnter}
         // onMouseMove={(event) => handleMouseMove(event)}
         onMouseLeave={handleMouseOut}
-        style={{ background: 'yellow' }}
+        style={{ background: 'yellow', width: 'auto' }}
       >
         {children}
         {inside && (
@@ -76,7 +83,6 @@ export const CursorWrapper: FunctionComponent<CursorWrapperProps> = ({ element, 
           }}
         >
           {element}
-          aaa
         </div>
       )}
       </div>

@@ -12,7 +12,7 @@ const App = () => (
     <div className='max-w-screen-lg p-5 md:p-10 antialiased'>
       <h1 className='font-bold text-3xl md:text-4xl'>react-custom-cursor</h1>
       <Separator />
-      <CursorWrapper element={<div className='w-24 h-24 rounded-full bg-red-500'></div>}>
+      <CursorWrapper settings={{ keepOriginal: false }} element={'Cool!'}>
         <div className='w-96 h-96 bg-red-200'>
           Hover here
         </div>
