@@ -8,8 +8,16 @@ import React, {
   useContext
 } from 'react'
 
+const defaultSettings: Settings = {
+  keepOriginal: false,
+  offsetX: 0,
+  offsetY: 0
+}
+
 type Settings = {
-  keepOriginal: boolean
+  keepOriginal?: boolean,
+  offsetX?: number,
+  offsetY?: number
 }
 
 type Position = {
@@ -20,11 +28,25 @@ type Position = {
 type CursorWrapperProps = {
   children: ReactNode
   element: ReactNode,
-  settings: Settings
+  settings?: SafelyMergedObject<Settings, typeof defaultSettings>
 }
 
 type MousePosProviderProps = {
   children: ReactNode
+}
+
+
+export function compactOptions<T extends { [key: string]: unknown }>(
+  options?: T
+): T | undefined {
+  if (!options) {
+    return options
+  }
+
+  const keys = Object.keys(options) as Array<keyof T>
+  const compactKeys = keys.filter((key) => options[key] !== undefined)
+  const compactEntries = compactKeys.map((key) => [key, options[key]])
+  return Object.fromEntries(compactEntries)
 }
 
 const MousePosContext = createContext<Position>({ x: 100, y: 50 })
@@ -45,6 +67,7 @@ export const MousePosProvider: FunctionComponent<MousePosProviderProps> = ({ chi
 
 export const CursorWrapper: FunctionComponent<CursorWrapperProps> = ({ settings, element, children }) => {
   const [inside, setInside] = useState<boolean>(false)
+  const _settings = { ...defaultSettings, ...compactOptions(settings) }
   const parent = useRef<HTMLDivElement>(null)
   const mousePos = useContext(MousePosContext)
 
@@ -54,7 +77,7 @@ export const CursorWrapper: FunctionComponent<CursorWrapperProps> = ({ settings,
   const handleMouseEnter = () => {
     setInside(true)
 
-    if (!settings.keepOriginal) {
+    if (!_settings.keepOriginal) {
       document.body.style.cursor = "none"
     }
   }
@@ -78,8 +101,8 @@ export const CursorWrapper: FunctionComponent<CursorWrapperProps> = ({ settings,
         <div
           style={{
             position: "absolute",
-            left: `${mousePos.x}px`,
-            top: `${mousePos.y}px`
+            left: `${mousePos.x + _settings.offsetX}px`,
+            top: `${mousePos.y + _settings.offsetY}px`
           }}
         >
           {element}
