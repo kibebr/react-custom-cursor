@@ -76,6 +76,7 @@ export const CursorWrapper: FunctionComponent<CursorWrapperProps> = ({ element, 
           }}
         >
           {element}
+          aaa
         </div>
       )}
       </div>

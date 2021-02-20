@@ -1,13 +1,18 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { MousePosProvider, CursorWrapper } from '../../src/components'
+import { MousePosProvider, CursorWrapper } from 'react-ponteiro'
 import './index.css'
+
+const Separator = () => (
+  <div className='my-5'></div>
+)
 
 const App = () => (
   <MousePosProvider>
     <div className='max-w-screen-lg p-5 md:p-10 antialiased'>
       <h1 className='font-bold text-3xl md:text-4xl'>react-custom-cursor</h1>
-      <CursorWrapper element={<div className='w-24 h-24 rounded-full'></div>}>
+      <Separator />
+      <CursorWrapper element={<div className='w-24 h-24 rounded-full bg-red-500'></div>}>
         <div className='w-96 h-96 bg-red-200'>
           Hover here
         </div>
